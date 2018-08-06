@@ -7,16 +7,18 @@ package principal;
 
 import bd.ConexionBD;
 import Objetos.*;
+import java.io.Console;
 import java.io.InputStreamReader;
+import static java.lang.System.console;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.logging.ConsoleHandler;
 
 /**
  *
  * @author julian
  */
 public class AA_setup {
-
     /**
      * @param args the command line arguments
      */
@@ -27,7 +29,7 @@ public class AA_setup {
         //ingresao de usuario
         Scanner in = new Scanner(System.in);
         System.out.println("Ingrese su cuenta de usuario:");
-        String cuenta = in.next("Ingrese su cuenta de usuario: ");
+        String cuenta = in.next();
         System.out.println("Ingrese su contraseña:");
         String clave = in.next();
         //validacion de usuario y contraseña
@@ -45,16 +47,17 @@ public class AA_setup {
                 int contador = 1;
                 //presentando las empresas en linea de comando
                 for (empresa emp:emps){
-                    String item = emp.getNombre();
-                    System.out.println(contador+". "+item);
+                    String nom_e = emp.getNombre();
+                    System.out.println(contador+". "+nom_e);
                     contador++;
                 }
                 System.out.println("Seleccione el numero de la empresa:");
                 int s = Integer.parseInt(in.next());
                 empresa empresa_select = c.obtenerDatosEmpresa(emps.get(s-1).getNombre());
-                System.out.println("Empresa seleccionada: "+empresa_select.getNombre());
+                System.out.println("\nEmpresa seleccionada: "+empresa_select.getNombre());
                 mostrarInfoEmpresa(empresa_select);
-                //
+                //seleccion de piscinas
+                
                 
             }else{
                 System.out.println("Usuario Invalido");
@@ -80,7 +83,7 @@ public class AA_setup {
     
     public static void mostrarInfoEmpresa(empresa e){
         System.out.println("Informacion de la empresa seleccionada:");
-        System.out.println("Id: "+e.getId_empresa());
+        System.out.println("Id Empresa: "+e.getId_empresa());
         System.out.println("Nombre: "+e.getNombre());
         System.out.println("Ruc: "+e.getRuc());
         System.out.println("Dirección: "+e.getDireccion());

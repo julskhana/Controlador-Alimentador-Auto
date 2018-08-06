@@ -69,11 +69,8 @@ public class ConexionBD {
         DateFormat df = new SimpleDateFormat("dd/MM/YYYY - hh:mm:ss");
         System.out.println("Using a dateFormat date is : " + df.format(uDate));
     }
-    */
-        
-        
+    */    
     }
-
     
     public boolean ingresarEmpresa(empresa e){
         try{
@@ -255,6 +252,7 @@ public class ConexionBD {
                 emp.setDireccion_planta(rs.getString("direccion_planta"));
                 emp.setTelefono(rs.getString("telefono"));
                 emp.setCorreo(rs.getString("correo"));
+                emp.setId_usuario(rs.getInt("id_usuario"));
                 System.out.println("Datos de empresa obtenidos...");
             }
             rs.close();
