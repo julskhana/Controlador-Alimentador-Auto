@@ -30,8 +30,7 @@ public class AA_setup {
         String cuenta = in.next();
         System.out.println("Ingrese su contraseña:");
         String clave = in.next();
-        //String cuenta = inuser.toString();
-        //String clave = inclav.toString();
+        //validacion de usuario y contraseña
         usuario u = new usuario(cuenta, clave);
         ConexionBD c = new ConexionBD();
         try{
