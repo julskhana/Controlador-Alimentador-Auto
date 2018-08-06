@@ -27,7 +27,7 @@ public class AA_setup {
         //ingresao de usuario
         Scanner in = new Scanner(System.in);
         System.out.println("Ingrese su cuenta de usuario:");
-        String cuenta = in.next();
+        String cuenta = in.next("Ingrese su cuenta de usuario: ");
         System.out.println("Ingrese su contraseña:");
         String clave = in.next();
         //validacion de usuario y contraseña
