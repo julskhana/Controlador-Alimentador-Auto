@@ -43,6 +43,7 @@ public class AA_setup {
                 System.out.println("Seleccione una empresa:");
                 ArrayList<empresa> emps = c.cargarEmpresas(u.getId());
                 int contador = 1;
+                //presentando las empresas en linea de comando
                 for (empresa emp:emps){
                     String item = emp.getNombre();
                     System.out.println(contador+". "+item);
