@@ -57,7 +57,16 @@ public class AA_setup {
                 System.out.println("\nEmpresa seleccionada: "+empresa_select.getNombre());
                 mostrarInfoEmpresa(empresa_select);
                 //seleccion de piscinas
-                
+
+                //seleccionar empresa
+
+                //seleccionar piscina
+
+                //seleccionar operadores
+
+                //seleccionar alimentador automatico
+
+                //iniciar conexion con app escritorio
                 
             }else{
                 System.out.println("Usuario Invalido");
@@ -66,18 +75,6 @@ public class AA_setup {
         }catch(Exception e){
             System.out.println("No se pudo conectar a la base de datos. "+e);
         }
-                
-        
-        //seleccionar empresa
-        
-        //seleccionar piscina
-        
-        //seleccionar operadores
-        
-        //seleccionar alimentador automatico
-        
-        //
-        
     }
     
     
