@@ -7,9 +7,6 @@ package principal;
 
 import bd.ConexionBD;
 import Objetos.*;
-import java.io.Console;
-import java.io.InputStreamReader;
-import static java.lang.System.console;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.logging.ConsoleHandler;
@@ -76,7 +73,6 @@ public class AA_setup {
             System.out.println("No se pudo conectar a la base de datos. "+e);
         }
     }
-    
     
     public static void mostrarInfoEmpresa(empresa e){
         System.out.println("Informacion de la empresa seleccionada:");

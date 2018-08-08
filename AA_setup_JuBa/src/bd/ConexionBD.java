@@ -17,16 +17,18 @@ public class ConexionBD {
        private static final String DRIVER = "com.mysql.jdbc.Driver";
        
        //driver para javac
-       //private static final String DRIVER = "SQLdriver/mysql-connector-java-5.1.43-bin.jar";
+       //private static final String DRIVER = "mysql-connector-java-5.1.23.jar";
        
        private static final String DBMS = "mysql";
-       private static final String HOST = "192.168.1.20";
-       //private static final String HOST = "127.0.0.1";
+       private static final String HOST = "192.168.1.20";   //prueba home           ok
+       //private static final String HOST = "localhost";   //prueba juba           ok
+       //private static final String HOST = "172.20.138.192";   //prueba espol           not ok
+       //private static final String HOST = "127.0.0.1";    //prueba xampp local    ok
        private static final String PORT = "3306";
        //base de datos
        private static final String DATABASE = "base_juba";  //cortejamiento: utf8_spanish_ci
-       private static final String USER = "admin";
-       private static final String PASSWORD = "admin123";
+       private static final String USER = "root2";
+       private static final String PASSWORD = "proyecto";
 
     void Conexion(){}
     
@@ -35,10 +37,11 @@ public class ConexionBD {
     public void conectar ()throws Exception{
         try{
             Class.forName(DRIVER);
-        }catch(ClassNotFoundException ce){}
+            System.out.println("Driver SQL cargando...");
+        }catch(ClassNotFoundException ce){System.out.println("error class " +ce);}
             try{
                 this.con = DriverManager.getConnection("jdbc:" + DBMS + "://" + HOST + ":" + PORT + "/" + DATABASE, USER, PASSWORD);                
-                System.out.println("CONEXION EXITOSA CON LA BASE DE DATOS");
+                System.out.println("CONEXION EXITOSA CON LA BASE DE DATOS: "+HOST);
             }catch(SQLException exception){
                 System.out.println("ERROR: NO SE PUDO CONECTAR CON LA BASE DE DATOS: "+exception);
             }             
