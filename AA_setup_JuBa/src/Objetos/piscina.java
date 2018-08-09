@@ -60,6 +60,15 @@ public class piscina implements Serializable{
 
     public piscina() {
     }
+
+    public piscina(int id_piscina, String descripcion, int id_empresa, int id_producto) {
+        this.id_piscina = id_piscina;
+        this.descripcion = descripcion;
+        this.id_empresa = id_empresa;
+        this.id_producto = id_producto;
+    }
+
+    
     
     //set
 
@@ -75,7 +84,7 @@ public class piscina implements Serializable{
         this.ubicacion = ubicacion;
     }
 
-    public void setLogitud_ancho(float logitud_ancho) {
+    public void setLongitud_ancho(float logitud_ancho) {
         this.logitud_ancho = logitud_ancho;
     }
 

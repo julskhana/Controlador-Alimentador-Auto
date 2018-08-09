@@ -237,6 +237,27 @@ public class ConexionBD {
         }
         return registroE;
     }
+    
+     public ArrayList<piscina> cargarPiscinas(int id_empresa){
+        ArrayList<piscina> registro = new ArrayList<piscina>();
+        try{
+            Statement st = this.con.createStatement();
+            ResultSet rs = null;
+            rs = st.executeQuery("SELECT * FROM piscina where id_empresa = "+id_empresa+";");
+            while (rs.next()){
+                int id = rs.getInt("id_piscina");
+                String desc = rs.getString("descripcion");
+                int emp = rs.getInt("id_empresa");
+                int prod = rs.getInt("id_producto");
+                piscina p = new piscina(id,desc,emp,prod);
+                registro.add(p);
+            }
+            System.out.println("Piscinas Consultadas.");
+        }catch (Exception e){
+            System.out.println("error en consulta de piscinas."+e);
+        }
+        return registro;
+    }
 
     //obtener datos empresa
     public empresa obtenerDatosEmpresa(String nombre){
@@ -265,6 +286,38 @@ public class ConexionBD {
         }           
         return emp; 
     }
+    
+    public piscina obtenerDatosPiscina(int empresa){
+        piscina p = new piscina();
+        ResultSet rs = null;                       
+        PreparedStatement st = null;
+        try{
+            st = con.prepareStatement("SELECT * FROM piscina WHERE id_empresa = ?;");            
+            st.setString(1,String.valueOf(empresa));
+            rs = st.executeQuery();            
+            if(rs.next()){
+                p.setId_piscina(rs.getInt("id_piscina"));
+                p.setDescripcion(rs.getString("descripcion"));
+                p.setUbicacion(rs.getString("ubicacion"));
+                p.setLongitud_ancho(rs.getFloat("longitud_ancho"));
+                p.setLongitud_largo(rs.getFloat("longitud_largo"));
+                p.setArea(rs.getFloat("area"));
+                p.setTipo(rs.getString("tipo"));
+                p.setForma(rs.getString("forma"));
+                p.setPoblacion(rs.getInt("poblacion"));
+                p.setId_empresa(rs.getInt("id_empresa"));
+                p.setId_producto(rs.getInt("id_producto"));
+                
+                System.out.println("Datos de la piscina obtenidos...");
+            }
+            rs.close();
+            st.close();
+        }catch(SQLException e){
+            System.out.println(e);
+        }           
+        return p; 
+    }
+    
     
     public ArrayList<empresa> consultarEmpresas(String busqueda, String tipo){
         ArrayList<empresa> registro = new ArrayList<empresa>();
