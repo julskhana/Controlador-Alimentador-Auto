@@ -11,3 +11,28 @@ ingreso piscina
 
 insert into piscina (descripcion,ubicacion,longitud_ancho,longitud_largo,area,tipo,forma,poblacion,id_empresa,id_producto)
 VALUES ("Piscina de camarones","Base 1",80.00,40.00,3200.00,"produccion","rectangular",54400,1,1);
+
+ingreso alimento
+
+INSERT INTO alimento (nombre,descripcion,tipo,masa_total,fecha_expiracion) VALUES("balanceado1","balanceador para camaron","Premium","100","2019-01-01");
+
+ingreso alimentador-auto
+
+INSERT INTO alimentador_auto (descripcion,nivel_bateria,nivel_alimento,capacidad_max_alimento,tipo,distancia_recorrida,numero_activaciones,estado) VALUES ("alimentador prueba 1",100.00,100.00,50.00,"nave",0.0,0,"apagado");
+
+https://spanish.alibaba.com/product-detail/ecuador-colombia-brazil-best-selling-type-automatic-feeder-shrimp-in-farm-60718773844.html?spm=a2700.8699010.normalList.2.797b176c2mDVjD&s=p
+
+ingreso de evento
+
+INSERT INTO evento (nombre,tipo,descripcion,fecha,numero_operadores,id_piscina) VALUES("Dispositivo1","alimentador","alimentador prueba raspberry","2018-08-09",2,1);
+
+INSERT INTO evento_operador (id_evento,id_operador) VALUES (1,1);
+INSERT INTO evento_operador (id_evento,id_operador) VALUES (1,2);
+
+INSERT INTO evento_alimento (id_evento,id_alimento) VALUES (1,1);
+
+INSERT INTO evento_aa (id_evento,id_aa) VALUES (1,1);
+
+GENERADOR DE LOGS DE EVENTOS
+
+INSERT INTO logs (nombre,descripcion,fecha_hora,tipo,prioridad,temperatura,id_evento) VALUES

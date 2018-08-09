@@ -7,6 +7,10 @@ package principal;
 
 import bd.ConexionBD;
 import Objetos.*;
+import java.sql.Date;
+//import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.logging.ConsoleHandler;
@@ -19,10 +23,13 @@ public class aa_setup {
     /**
      * @param args the command line arguments
      */
+    
     public static void main(String[] args) {
         // TODO code application logic here
         System.out.println("Proyecto JuBa\nPrograma de Configuracion de Alimentador Automatico");
         System.out.println("INGRESO AL SISTEMA - AUTENTICACION");
+        //generar fecha hora
+        System.out.println("Fecha y Hora Actual: "+generarFechaHora());
         //ingresao de usuario
         Scanner in = new Scanner(System.in);
         System.out.println("Ingrese su cuenta de usuario:");
@@ -38,28 +45,33 @@ public class aa_setup {
                 //ingreso al sistema
                 u = c.obtenerDatosUsuario(cuenta);
                 System.out.println("Bienvenido "+u.getNombres()+" "+u.getApellidos()+" - "+u.getTipo());
+                //EMPRESAS
                 //desplegar empresas
                 System.out.println("Seleccione una empresa:");
-                ArrayList<empresa> emps = c.cargarEmpresas(u.getId());
-                mostrarListaEmpresas(emps);
+                ArrayList<empresa> empresas = c.cargarEmpresas(u.getId());
+                mostrarListaEmpresas(empresas);
                 //seleccionar empresa
                 System.out.println("Seleccione el numero de la empresa:");
                 int emp = Integer.parseInt(in.next());
-                empresa empresa_select = c.obtenerDatosEmpresa(emps.get(emp-1).getNombre());
+                empresa empresa_select = c.obtenerDatosEmpresa(empresas.get(emp-1).getNombre());
                 System.out.println("\nEmpresa seleccionada: "+empresa_select.getNombre());
                 mostrarInfoEmpresa(empresa_select);
+                //PISCINAS
                 //listar piscinas
-                ArrayList<piscina> pisc = c.cargarPiscinas(empresa_select.getId_empresa());
-                mostrarListaPiscinas(pisc);
+                ArrayList<piscina> piscinas = c.cargarPiscinas(empresa_select.getId_empresa());
+                mostrarListaPiscinas(piscinas);
                 //seleccionar piscina
                 System.out.println("Seleccione la Piscina:");
                 int pi = Integer.parseInt(in.next());
                 piscina piscina_select = c.obtenerDatosPiscina(pi);
                 System.out.println("\nPiscina Seleccionada: "+piscina_select.getId_piscina()+" "+piscina_select.getDescripcion());
                 mostrarInfoPiscina(piscina_select);
+                //EVENTOS
+                //listar evento
+                System.out.println("Seleccione el Evento programado que desea ejecutar:");
+                ArrayList<evento> eventos = c.cargarEventos(piscina_select.getId_piscina());
+                mostrarListaEventos(eventos);
                 //seleccionar evento
-                System.out.println("Seleccione el Evento que desea ejecutar:");
-                
             }else{
                 System.out.println("Usuario Invalido");
             }
@@ -118,6 +130,21 @@ public class aa_setup {
             }
     }
     
+    public static void mostrarListaEventos(ArrayList<evento> e){
+        int i = 1;
+            //presentando las empresas en linea de comando
+            for (evento eve:e){
+                int id = eve.getId_evento();
+                String nom = eve.getNombre();
+                String fecha = eve.getFecha().toString();
+                String fecha_act = generarFechaHora().split(" ")[0];
+                if(fecha.equals(fecha_act)){
+                    System.out.println(i+". Evento Id:"+id+" "+nom);
+                    i++;
+                }
+            }
+    }
+    
     //funciones para validaciones
     
     public static boolean esNumero(){
@@ -129,7 +156,23 @@ public class aa_setup {
     }
     
     //funciones de procesos
-    public static void alimentar(){
+    
+    public static String generarFechaHora(){
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");  
+        LocalDateTime now = LocalDateTime.now(); 
+        return dtf.format(now);
+    }
+    
+    public static void iniciarEvento(){
         
+    }
+    
+    public static void terminarEvento(){
+        
+    }
+    
+    public static log generarLog(){
+        log bit = new log();
+        return bit;
     }
 }

@@ -6,6 +6,7 @@
 package Objetos;
 
 import java.io.Serializable;
+import java.sql.Date;
 
 /**
  *
@@ -16,7 +17,7 @@ public class log implements Serializable{
     private int id;
     private String nombre;
     private String descripcion;
-    private String fecha_hora;
+    private Date fecha_hora;
     private String tipo;
     private String prioridad;
     private float temperatura;
@@ -24,7 +25,7 @@ public class log implements Serializable{
     
     //cosntructor 
 
-    public log(int id, String nombre, String descripcion, String fecha_hora, String tipo, String prioridad, float temperatura, int id_evento) {
+    public log(int id, String nombre, String descripcion, Date fecha_hora, String tipo, String prioridad, float temperatura, int id_evento) {
         this.id = id;
         this.nombre = nombre;
         this.descripcion = descripcion;
@@ -37,7 +38,7 @@ public class log implements Serializable{
     
     //constructor para ingresar a base de datos
 
-    public log(String nombre, String descripcion, String fecha_hora, String tipo, String prioridad, float temperatura, int id_evento) {
+    public log(String nombre, String descripcion, Date fecha_hora, String tipo, String prioridad, float temperatura, int id_evento) {
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.fecha_hora = fecha_hora;
@@ -64,7 +65,7 @@ public class log implements Serializable{
         this.descripcion = descripcion;
     }
 
-    public void setFecha_hora(String fecha_hora) {
+    public void setFecha_hora(Date fecha_hora) {
         this.fecha_hora = fecha_hora;
     }
 
@@ -98,7 +99,7 @@ public class log implements Serializable{
         return descripcion;
     }
 
-    public String getFecha_hora() {
+    public Date getFecha_hora() {
         return fecha_hora;
     }
 

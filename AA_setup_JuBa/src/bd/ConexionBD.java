@@ -258,6 +258,31 @@ public class ConexionBD {
         }
         return registro;
     }
+     
+     public ArrayList<evento> cargarEventos(int id_piscina){
+        ArrayList<evento> registro = new ArrayList<evento>();
+        try{
+            Statement st = this.con.createStatement();
+            ResultSet rs = null;
+            rs = st.executeQuery("SELECT * FROM evento where id_piscina = "+id_piscina+";");
+            while (rs.next()){
+                int id = rs.getInt("id_evento");
+                String nombre = rs.getString("nombre");
+                String tipo = rs.getString("tipo");
+                String desc = rs.getString("descripcion");
+                Date fecha_hora = rs.getDate("fecha");
+                int n_ops = rs.getInt("numero_operadores");
+                int id_pisc = rs.getInt("id_piscina");
+                
+                evento e = new evento(id,nombre, tipo, desc, fecha_hora, n_ops, id_pisc);
+                registro.add(e);
+            }
+            System.out.println("Eventos Consultados.");
+        }catch (Exception e){
+            System.out.println("Error en consulta de eventos."+e);
+        }
+        return registro;
+    }
 
     //obtener datos empresa
     public empresa obtenerDatosEmpresa(String nombre){
@@ -448,6 +473,28 @@ public class ConexionBD {
         return registro;
     }
     
+    public boolean generarLog(log log){
+        try{
+            PreparedStatement st=null;
+            st = con.prepareStatement("INSERT INTO logs (nombre,descripcion,fecha_hora,tipo,prioridad,temperatura,id_evento) VALUES(?,?,?,?,?,?,?);");
+            st.setString(1,log.getNombre());
+            st.setString(2,log.getDescripcion());
+            st.setDate(3,log.getFecha_hora());
+            st.setString(4,log.getTipo());
+            st.setString(5,log.getPrioridad());
+            st.setFloat(6,log.getTemperatura());
+            st.setInt(7,log.getId_evento());
+            
+            st.executeUpdate();
+            st.close();
+            
+            System.out.println("Log: "+log.getId()+" Tipo: "+log.getTipo()+" FechaHora: "+log.getFecha_hora()+" Evento: "+log.getId_evento());
+            return true;
+        }catch (SQLException e){
+            System.out.println("Error al generar el log\n"+e);
+            return false;
+        }
+    }
     
     /**
     //FUNCIONES DE PROYECTO RESTAURANTE
