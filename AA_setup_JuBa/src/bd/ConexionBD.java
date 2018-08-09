@@ -20,6 +20,7 @@ public class ConexionBD {
        //private static final String DRIVER = "mysql-connector-java-5.1.23.jar";
        
        private static final String DBMS = "mysql";
+       //private static final String HOST = "192.168.10.2";   //prueba home           ok
        private static final String HOST = "192.168.1.20";   //prueba home           ok
        //private static final String HOST = "localhost";   //prueba juba           ok
        //private static final String HOST = "172.20.138.192";   //prueba espol           not ok
