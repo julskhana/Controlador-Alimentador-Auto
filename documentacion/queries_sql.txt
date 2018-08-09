@@ -1,0 +1,13 @@
+ingreso producto
+
+INSERT INTO producto (nombre,nombre_cientifico,peso_ideal) VALUES ("Camarón","Pandalus borealis",12);
+
+ingreso operadores
+
+INSERT INTO operador (nombre,cedula,telefono,tipo) VALUES("nombre_tecnico1","0999999911","0999999991","tecnico");
+INSERT INTO operador (nombre,cedula,telefono,tipo) VALUES("nombre_tecnico2","0999999922","0999999992","trabajador");
+
+ingreso piscina
+
+insert into piscina (descripcion,ubicacion,longitud_ancho,longitud_largo,area,tipo,forma,poblacion,id_empresa,id_producto)
+VALUES ("Piscina de camarones","Base 1",80.00,40.00,3200.00,"produccion","rectangular",54400,1,1);

@@ -15,15 +15,13 @@ public class ConexionBD {
        private Connection con;
        //driver netbeans
        private static final String DRIVER = "com.mysql.jdbc.Driver";
-       
        //driver para javac
        //private static final String DRIVER = "mysql-connector-java-5.1.23.jar";
-       
        private static final String DBMS = "mysql";
        //private static final String HOST = "192.168.10.2";   //prueba home           ok
        private static final String HOST = "192.168.1.20";   //prueba home           ok
        //private static final String HOST = "localhost";   //prueba juba           ok
-       //private static final String HOST = "172.20.138.192";   //prueba espol           not ok
+       //private static final String HOST = "172.20.138.192";   //prueba espol      ok
        //private static final String HOST = "127.0.0.1";    //prueba xampp local    ok
        private static final String PORT = "3306";
        //base de datos
@@ -38,11 +36,12 @@ public class ConexionBD {
     public void conectar ()throws Exception{
         try{
             Class.forName(DRIVER);
-            System.out.println("Driver SQL cargando...");
+            System.out.println("Cargando Driver MySQL...");
         }catch(ClassNotFoundException ce){System.out.println("error class " +ce);}
             try{
                 this.con = DriverManager.getConnection("jdbc:" + DBMS + "://" + HOST + ":" + PORT + "/" + DATABASE, USER, PASSWORD);                
-                System.out.println("CONEXION EXITOSA CON LA BASE DE DATOS: "+HOST);
+                //System.out.println("CONEXION EXITOSA CON LA BASE DE DATOS: ");
+                System.out.println("Conectando con servidor "+HOST);
             }catch(SQLException exception){
                 System.out.println("ERROR: NO SE PUDO CONECTAR CON LA BASE DE DATOS: "+exception);
             }             
@@ -144,10 +143,9 @@ public class ConexionBD {
             if(rs.next()){
                 u.setTipo(rs.getString("estado"));
                 resultado = true;
-                System.out.println("usuario valido y activo...");
-                System.out.println(u.getCuenta()+" - "+u.getTipo());
+                System.out.println("Usuario Válido");
             }else{
-                System.out.println("usuario despedido...");
+                System.out.println("Usuario o Clave invalidos...");
             }
             rs.close();
             st.close();
@@ -314,19 +312,19 @@ public class ConexionBD {
 		
 		while (rs.next()){
                     int id           = rs.getInt("id_usuario");
-                    String cuenta = rs.getString("cuenta");
+                    String cuenta    = rs.getString("cuenta");
                     String nombres   = rs.getString("nombres");
                     String apellidos = rs.getString("apellidos");
-                    String cedula = rs.getString("cedula");
-                    int edad      = rs.getInt("edad");
+                    String cedula    = rs.getString("cedula");
+                    int edad         = rs.getInt("edad");
                     String direccion = rs.getString("direccion");
-                    String telefono = rs.getString("telefono");
-                    String celular = rs.getString("celular");
-                    String correo = rs.getString("correo");
+                    String telefono  = rs.getString("telefono");
+                    String celular   = rs.getString("celular");
+                    String correo    = rs.getString("correo");
                     String sexo      = rs.getString("sexo");
-                    String tipoU      = rs.getString("tipo");
+                    String tipoU     = rs.getString("tipo");
                     String cargo     = rs.getString("cargo");
-                    String estado = rs.getString("estado");
+                    String estado    = rs.getString("estado");
                     Date fecha_inicio = rs.getDate("fecha_inicio");
                     
                     usuario usr = new usuario(id, cuenta, cargo, nombres, apellidos, cedula, edad, direccion, telefono, celular, correo, sexo, tipoU, cargo, fecha_inicio, estado);
@@ -337,7 +335,66 @@ public class ConexionBD {
 		System.out.println("error en consulta de usuarios."+e);
 	}
 	return registroU;
-}
+    }
+    
+    public ArrayList<operador> consultarPiscinas(String busqueda, String lista) {
+        ArrayList<operador> registro = new ArrayList<operador>();
+        try{
+            Statement st = this.con.createStatement();            
+            ResultSet rs = null;
+            
+            if(lista.equalsIgnoreCase("piscina")){
+                rs = st.executeQuery("SELECT * FROM piscina;");
+            }else{
+                rs = st.executeQuery("SELECT * FROM piscina WHERE "+lista+" LIKE '%"+busqueda+"%';");
+            }
+            
+            while (rs.next()){
+                int id_operador  = rs.getInt("id_operador");
+                String nombre    = rs.getString("nombre");
+                String cedula    = rs.getString("cedula");
+                String telefono  = rs.getString("telefono");
+                String tipo      = rs.getString("tipo");
+                
+                operador emp = new operador(id_operador,nombre,cedula,telefono,tipo);
+                registro.add(emp);
+            }
+            System.out.println("operadores consultados...");
+        }catch (SQLException e){
+            System.out.println("error en consulta de operadores"+e);
+        }
+        return registro;
+    }
+    
+    public ArrayList<operador> consultarOperadores(String busqueda, String lista) {
+        ArrayList<operador> registro = new ArrayList<operador>();
+        try{
+            Statement st = this.con.createStatement();            
+            ResultSet rs = null;
+            
+            if(lista.equalsIgnoreCase("operador")){
+                rs = st.executeQuery("SELECT * FROM operador;");
+            }else{
+                rs = st.executeQuery("SELECT * FROM operador WHERE "+lista+" LIKE '%"+busqueda+"%';");
+            }
+            
+            while (rs.next()){
+                int id_operador  = rs.getInt("id_operador");
+                String nombre    = rs.getString("nombre");
+                String cedula    = rs.getString("cedula");
+                String telefono  = rs.getString("telefono");
+                String tipo      = rs.getString("tipo");
+                
+                operador emp = new operador(id_operador,nombre,cedula,telefono,tipo);
+                registro.add(emp);
+            }
+            System.out.println("operadores consultados...");
+        }catch (SQLException e){
+            System.out.println("error en consulta de operadores"+e);
+        }
+        return registro;
+    }
+    
     
     /**
     //FUNCIONES DE PROYECTO RESTAURANTE

@@ -15,7 +15,7 @@ import java.util.logging.ConsoleHandler;
  *
  * @author julian
  */
-public class AA_setup {
+public class aa_setup {
     /**
      * @param args the command line arguments
      */
@@ -37,7 +37,7 @@ public class AA_setup {
             if(c.esUsuarioValido(u)){
                 //ingreso al sistema
                 u = c.obtenerDatosUsuario(cuenta);
-                System.out.println("Bienvenido "+u.getNombres()+" "+u.getApellidos());
+                System.out.println("Bienvenido "+u.getNombres()+" "+u.getApellidos()+" - "+u.getTipo());
                 //desplegar empresas
                 System.out.println("Seleccione una empresa:");
                 ArrayList<empresa> emps = c.cargarEmpresas(u.getId());
@@ -74,6 +74,8 @@ public class AA_setup {
         }
     }
     
+    //funciones para mostrar datos
+    
     public static void mostrarInfoEmpresa(empresa e){
         System.out.println("Informacion de la empresa seleccionada:");
         System.out.println("Id Empresa: "+e.getId_empresa());
@@ -84,5 +86,11 @@ public class AA_setup {
         System.out.println("Teléfono: "+e.getTelefono());
         System.out.println("Correo: "+e.getCorreo());
         System.out.println("Usuario id: "+e.getId_usuario());
+    }
+    
+    //funciones para validaciones
+    
+    public static boolean esNumero(){
+        return false;
     }
 }
