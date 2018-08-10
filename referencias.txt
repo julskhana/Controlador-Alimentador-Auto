@@ -1,3 +1,5 @@
 GPIO Programming in JAVA | Raspberry Pi #6
 http://pi4j.com/pins/model-3b-rev1.html
 https://www.youtube.com/watch?v=-6cc-d8CtfI
+
+https://www.javatpoint.com/java-get-current-date

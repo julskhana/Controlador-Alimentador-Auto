@@ -23,6 +23,7 @@ public class aa_setup {
     /**
      * @param args the command line arguments
      */
+    private static final int IDAA = 1;
     
     public static void main(String[] args) {
         // TODO code application logic here
@@ -45,33 +46,46 @@ public class aa_setup {
                 //ingreso al sistema
                 u = c.obtenerDatosUsuario(cuenta);
                 System.out.println("Bienvenido "+u.getNombres()+" "+u.getApellidos()+" - "+u.getTipo());
-                //EMPRESAS
-                //desplegar empresas
-                System.out.println("Seleccione una empresa:");
-                ArrayList<empresa> empresas = c.cargarEmpresas(u.getId());
-                mostrarListaEmpresas(empresas);
-                //seleccionar empresa
-                System.out.println("Seleccione el numero de la empresa:");
-                int emp = Integer.parseInt(in.next());
-                empresa empresa_select = c.obtenerDatosEmpresa(empresas.get(emp-1).getNombre());
-                System.out.println("\nEmpresa seleccionada: "+empresa_select.getNombre());
-                mostrarInfoEmpresa(empresa_select);
-                //PISCINAS
-                //listar piscinas
-                ArrayList<piscina> piscinas = c.cargarPiscinas(empresa_select.getId_empresa());
-                mostrarListaPiscinas(piscinas);
-                //seleccionar piscina
-                System.out.println("Seleccione la Piscina:");
-                int pi = Integer.parseInt(in.next());
-                piscina piscina_select = c.obtenerDatosPiscina(pi);
-                System.out.println("\nPiscina Seleccionada: "+piscina_select.getId_piscina()+" "+piscina_select.getDescripcion());
-                mostrarInfoPiscina(piscina_select);
-                //EVENTOS
-                //listar evento
-                System.out.println("Seleccione el Evento programado que desea ejecutar:");
-                ArrayList<evento> eventos = c.cargarEventos(piscina_select.getId_piscina());
-                mostrarListaEventos(eventos);
-                //seleccionar evento
+                //ALIMENTADOR AUTOMATICO
+                System.out.println("Datos de Alimetador Automático");
+                alimentadorAuto dispositivo = c.obtenerDatosDispositivoAA(IDAA);
+                mostrarInfoDisp(dispositivo);
+                if(c.encenderDispositivo(IDAA)){
+                    //EMPRESAS
+                    //desplegar empresas
+                    System.out.println("Seleccione una empresa:");
+                    ArrayList<empresa> empresas = c.cargarEmpresas(u.getId());
+                    mostrarListaEmpresas(empresas);
+                    //seleccionar empresa
+                    System.out.println("Seleccione el numero de la empresa:");
+                    int emp = Integer.parseInt(in.next());
+                    empresa empresa_select = c.obtenerDatosEmpresa(empresas.get(emp-1).getNombre());
+                    System.out.println("\nEmpresa seleccionada: "+empresa_select.getNombre());
+                    mostrarInfoEmpresa(empresa_select);
+                    //PISCINAS
+                    //listar piscinas
+                    ArrayList<piscina> piscinas = c.cargarPiscinas(empresa_select.getId_empresa());
+                    mostrarListaPiscinas(piscinas);
+                    //seleccionar piscina
+                    System.out.println("Seleccione la Piscina:");
+                    int pi = Integer.parseInt(in.next());
+                    piscina piscina_select = c.obtenerDatosPiscina(pi);
+                    System.out.println("\nPiscina Seleccionada: "+piscina_select.getId_piscina()+" "+piscina_select.getDescripcion());
+                    mostrarInfoPiscina(piscina_select);
+                    //EVENTOS
+                    //listar evento
+                    System.out.println("Seleccione el Evento programado que desea ejecutar:");
+                    ArrayList<evento> eventos = c.cargarEventos(piscina_select.getId_piscina());
+                    mostrarListaEventos(eventos);
+                    //seleccionar evento
+
+                    //apagando dispositivo
+                    if(c.apagarDispositivo(IDAA)){
+                        System.out.println("Dispositivo "+IDAA+" Apagado...");
+                    }
+                }else{
+                    System.out.println("Error al conectar el dispositivo...");
+                }
             }else{
                 System.out.println("Usuario Invalido");
             }
@@ -108,6 +122,20 @@ public class aa_setup {
         System.out.println("Poblacion Actual: "+p.getPoblacion()+" Camarónes.");
         System.out.println("Id Empresa:     "+p.getId_empresa());
         System.out.println("Id Producto:    "+p.getId_producto()+"\n");
+    }
+    
+    public static void mostrarInfoDisp(alimentadorAuto aa){
+        System.out.println("Informacion del Dispositivo");
+        System.out.println("Id:          "+aa.getId());
+        System.out.println("Descripción: "+aa.getDescripcion());
+        System.out.println("Nivel Bateria: "+aa.getNivel_bateria()+"%");
+        System.out.println("Nivel Alimento: "+aa.getNivel_alimento()+"%");
+        System.out.println("Capacidad Maxima Alimento: "+aa.getCap_max_alimento()+"[KG]");
+        System.out.println("Tipo: "+aa.getTipo());
+        System.out.println("Distancia Recorrida: "+aa.getDistancia_recorrida());
+        System.out.println("Numero de Activaciones: "+aa.getN_activaciones());
+        System.out.println("Estado: "+aa.getEstado()+"\n");
+        
     }
     
     public static void mostrarListaEmpresas(ArrayList<empresa> e){

@@ -60,11 +60,10 @@ public class ConexionBD {
     }
     
     //FUNCIONES PARA PORYECTO CAMARONERA
-    
+    /*
     //coversion de fecha a date sql
     public class DatesConversion {
 
-    /*
     public void main(String[] args) {
         java.util.Date uDate = new java.util.Date();
         System.out.println("Time in java.util.Date is : " + uDate);
@@ -72,8 +71,78 @@ public class ConexionBD {
         System.out.println("Time in java.sql.Date is : " + sDate);
         DateFormat df = new SimpleDateFormat("dd/MM/YYYY - hh:mm:ss");
         System.out.println("Using a dateFormat date is : " + df.format(uDate));
+    }   
+    }*/
+    
+    public alimentadorAuto obtenerDatosDispositivoAA(int id){
+        alimentadorAuto aa = new alimentadorAuto();
+        ResultSet rs = null;
+        PreparedStatement st = null;
+        try{
+            st = con.prepareStatement("select * from alimentador_auto where id_aa = ?;");
+            st.setInt(1,id);
+            st.executeQuery();
+            rs = st.executeQuery();
+            if(rs.next()){
+                aa.setId(id);
+                aa.setDescripcion(rs.getString("descripcion"));
+                aa.setNivel_bateria(rs.getFloat("nivel_bateria"));
+                aa.setNivel_alimento(rs.getFloat("nivel_alimento"));
+                aa.setCap_max_alimento(rs.getFloat("capacidad_max_alimento"));
+                aa.setTipo(rs.getString("tipo"));
+                aa.setDistancia_recorrida(rs.getFloat("distancia_recorrida"));
+                aa.setEstado(rs.getString("estado"));
+            }
+            rs.close();
+            st.close();
+            System.out.println("Datos de dispositivo cargados correctamente...");
+        }catch(Exception e){
+            System.out.println("Error al obtener datos del dispositivo...\n"+e);
+        }
+        
+        return aa;
     }
-    */    
+    
+    public boolean encenderDispositivo(int id){
+        System.out.println("Encendiendo Dispositivo...");
+        String estado_actual = "encendido";
+        try
+        {
+            PreparedStatement st = null;
+            st = con.prepareStatement("update alimentador_auto set estado = ? WHERE id_aa = ?;");
+            st.setString(1,estado_actual);
+            st.setInt(2,id);
+            st.executeUpdate();
+            st.close();
+            System.out.println("Dispositivo encendido correctamente...");
+            return true;
+        }
+        catch(Exception e)
+        {
+            System.out.println("Error al encender el dispositivo... "+e);
+            return false;
+        }
+    }
+    
+    public boolean apagarDispositivo(int id){
+        System.out.println("Apagando Dispositivo...");
+        String estado_actual = "apagado";
+        try
+        {
+            PreparedStatement st = null;
+            st = con.prepareStatement("update alimentador_auto set estado = ? WHERE id_aa = ?;");
+            st.setString(1,estado_actual);
+            st.setInt(2,id);
+            st.executeUpdate();
+            st.close();
+            System.out.println("Dispositivo apagado correctamente...");
+            return true;
+        }
+        catch(Exception e)
+        {
+            System.out.println("Error al apagar el dispositivo... "+e);
+            return false;
+        }
     }
     
     public boolean ingresarEmpresa(empresa e){
