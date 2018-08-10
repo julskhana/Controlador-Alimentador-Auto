@@ -22,10 +22,11 @@ public class log implements Serializable{
     private String prioridad;
     private float temperatura;
     private int id_evento;
+    private int dispositivo;
     
     //cosntructor 
 
-    public log(int id, String nombre, String descripcion, Date fecha_hora, String tipo, String prioridad, float temperatura, int id_evento) {
+    public log(int id, String nombre, String descripcion, Date fecha_hora, String tipo, String prioridad, float temperatura, int id_evento, int dispositivo) {
         this.id = id;
         this.nombre = nombre;
         this.descripcion = descripcion;
@@ -34,11 +35,12 @@ public class log implements Serializable{
         this.prioridad = prioridad;
         this.temperatura = temperatura;
         this.id_evento = id_evento;
+        this.dispositivo = dispositivo;
     }
     
     //constructor para ingresar a base de datos
 
-    public log(String nombre, String descripcion, Date fecha_hora, String tipo, String prioridad, float temperatura, int id_evento) {
+    public log(String nombre, String descripcion, Date fecha_hora, String tipo, String prioridad, float temperatura, int id_evento, int dispositivo) {
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.fecha_hora = fecha_hora;
@@ -46,6 +48,7 @@ public class log implements Serializable{
         this.prioridad = prioridad;
         this.temperatura = temperatura;
         this.id_evento = id_evento;
+        this.dispositivo = dispositivo;
     }
     
     //constructor vacio
@@ -84,6 +87,10 @@ public class log implements Serializable{
     public void setId_evento(int id_evento) {
         this.id_evento = id_evento;
     }
+
+    public void setDispositivo(int dispositivo) {
+        this.dispositivo = dispositivo;
+    }
     
     //get
 
@@ -117,6 +124,10 @@ public class log implements Serializable{
 
     public int getId_evento() {
         return id_evento;
+    }
+
+    public int getDispositivo() {
+        return dispositivo;
     }
     
 }
