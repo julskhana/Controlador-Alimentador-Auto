@@ -75,10 +75,15 @@ public class aa_setup {
                     //EVENTOS
                     //listar evento
                     System.out.println("Seleccione el Evento programado que desea ejecutar:");
-                    ArrayList<evento> eventos = c.cargarEventos(piscina_select.getId_piscina());
+                    ArrayList<evento> eventos = c.cargarEventosPendientes(piscina_select.getId_piscina());
+                    //System.out.println("Eventos programados: "+eventos.size());
                     mostrarListaEventos(eventos);
                     //seleccionar evento
-
+                    System.out.println("Seleccione un Evento:");
+                    int ev1 = Integer.parseInt(in.next());
+                    System.out.println(ev1);
+                    evento evento_selec = c.obtenerDatosEvento(ev1);
+                    //mostrarInfoEvento(evento_select);
                     //apagando dispositivo
                     if(c.apagarDispositivo(IDAA)){
                         System.out.println("Dispositivo "+IDAA+" Apagado...");
@@ -89,9 +94,15 @@ public class aa_setup {
             }else{
                 System.out.println("Usuario Invalido");
             }
-            c.desconectar();
         }catch(Exception e){
             System.out.println("No se pudo conectar a la base de datos. "+e);
+            try{
+                c.apagarDispositivo(IDAA);
+                c.desconectar();
+            }catch(Exception ex){
+                System.out.println("Error al apagar de emergencia el dispositivo. "+ex);
+            }
+                    
         }
     }
     
@@ -126,16 +137,27 @@ public class aa_setup {
     
     public static void mostrarInfoDisp(alimentadorAuto aa){
         System.out.println("Informacion del Dispositivo");
-        System.out.println("Id:          "+aa.getId());
-        System.out.println("Descripción: "+aa.getDescripcion());
-        System.out.println("Nivel Bateria: "+aa.getNivel_bateria()+"%");
-        System.out.println("Nivel Alimento: "+aa.getNivel_alimento()+"%");
+        System.out.println("Id:                     "+aa.getId());
+        System.out.println("Descripción:            "+aa.getDescripcion());
+        System.out.println("Nivel Bateria:          "+aa.getNivel_bateria()+"%");
+        System.out.println("Nivel Alimento:         "+aa.getNivel_alimento()+"%");
         System.out.println("Capacidad Maxima Alimento: "+aa.getCap_max_alimento()+"[KG]");
-        System.out.println("Tipo: "+aa.getTipo());
-        System.out.println("Distancia Recorrida: "+aa.getDistancia_recorrida());
+        System.out.println("Tipo:                   "+aa.getTipo());
+        System.out.println("Distancia Recorrida:    "+aa.getDistancia_recorrida());
         System.out.println("Numero de Activaciones: "+aa.getN_activaciones());
-        System.out.println("Estado: "+aa.getEstado()+"\n");
-        
+        System.out.println("Estado: "+aa.getEstado()+"\n");   
+    }
+    
+    public static void mostrarInfoEvento(evento e){
+        System.out.println("Informacion del Evento");
+        System.out.println("Id:                "+e.getId_evento());
+        System.out.println("Nombre:            "+e.getNombre());
+        System.out.println("Tipo:              "+e.getTipo());
+        System.out.println("Descripción:       "+e.getDescripcion());
+        System.out.println("Fecha:             "+e.getFecha());
+        System.out.println("Numero de Operadores: "+e.getNumero_operadores());
+        System.out.println("Piscina:           "+e.getId_piscina());        
+        System.out.println("Estado:            "+e.getEstado()+"\n");    
     }
     
     public static void mostrarListaEmpresas(ArrayList<empresa> e){
@@ -166,8 +188,9 @@ public class aa_setup {
                 String nom = eve.getNombre();
                 String fecha = eve.getFecha().toString();
                 String fecha_act = generarFechaHora().split(" ")[0];
-                if(fecha.equals(fecha_act)){
-                    System.out.println(i+". Evento Id:"+id+" "+nom);
+                String estado = eve.getEstado();
+                if(fecha.equals(fecha_act) && estado.equals("Pendiente")){
+                    System.out.println(i+". Evento Id:"+id+" "+nom+" - "+estado);
                     i++;
                 }
             }

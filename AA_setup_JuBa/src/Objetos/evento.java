@@ -8,7 +8,6 @@ package Objetos;
 
 import java.io.Serializable;
 import java.sql.Date;
-//import java.util.Date;
 
 /**
  *
@@ -23,10 +22,11 @@ public class evento implements Serializable{
     private Date fecha;
     private int numero_operadores;
     private int id_piscina;
+    private String estado;
     
     //constructor
 
-    public evento(int id_evento, String nombre, String tipo, String descripcion, Date fecha, int numero_operadores, int id_piscina) {
+    public evento(int id_evento, String nombre, String tipo, String descripcion, Date fecha, int numero_operadores, int id_piscina, String estado) {
         this.id_evento = id_evento;
         this.nombre = nombre;
         this.tipo = tipo;
@@ -34,17 +34,23 @@ public class evento implements Serializable{
         this.fecha = fecha;
         this.numero_operadores = numero_operadores;
         this.id_piscina = id_piscina;
+        this.estado = estado;
     }
     
     //constructor para ingresar en Piscina
-
-    public evento(String nombre, String tipo, String descripcion, Date fecha, int numero_operadores, int id_piscina) {
+    public evento(String nombre, String tipo, String descripcion, Date fecha, int numero_operadores, int id_piscina, String estado) {
         this.nombre = nombre;
         this.tipo = tipo;
         this.descripcion = descripcion;
         this.fecha = fecha;
         this.numero_operadores = numero_operadores;
         this.id_piscina = id_piscina;
+        this.estado = estado;
+    }
+    
+    //constructor vacio
+
+    public evento(){
     }
     
     //set
@@ -76,6 +82,10 @@ public class evento implements Serializable{
     public void setId_piscina(int id_piscina) {
         this.id_piscina = id_piscina;
     }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
     
     //get
 
@@ -105,6 +115,10 @@ public class evento implements Serializable{
 
     public int getId_piscina() {
         return id_piscina;
+    }
+
+    public String getEstado() {
+        return estado;
     }
     
 }

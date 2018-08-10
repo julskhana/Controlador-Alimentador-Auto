@@ -105,7 +105,7 @@ public class ConexionBD {
     
     public boolean encenderDispositivo(int id){
         System.out.println("Encendiendo Dispositivo...");
-        String estado_actual = "encendido";
+        String estado_actual = "Encendido";
         try
         {
             PreparedStatement st = null;
@@ -126,7 +126,7 @@ public class ConexionBD {
     
     public boolean apagarDispositivo(int id){
         System.out.println("Apagando Dispositivo...");
-        String estado_actual = "apagado";
+        String estado_actual = "Apagado";
         try
         {
             PreparedStatement st = null;
@@ -328,12 +328,12 @@ public class ConexionBD {
         return registro;
     }
      
-     public ArrayList<evento> cargarEventos(int id_piscina){
+     public ArrayList<evento> cargarEventosPendientes(int id_piscina){
         ArrayList<evento> registro = new ArrayList<evento>();
         try{
             Statement st = this.con.createStatement();
             ResultSet rs = null;
-            rs = st.executeQuery("SELECT * FROM evento where id_piscina = "+id_piscina+";");
+            rs = st.executeQuery("SELECT * FROM evento where id_piscina = "+id_piscina+" AND estado = \"Pendiente\";");
             while (rs.next()){
                 int id = rs.getInt("id_evento");
                 String nombre = rs.getString("nombre");
@@ -342,12 +342,13 @@ public class ConexionBD {
                 Date fecha_hora = rs.getDate("fecha");
                 int n_ops = rs.getInt("numero_operadores");
                 int id_pisc = rs.getInt("id_piscina");
+                String estado = rs.getString("estado");
                 
-                evento e = new evento(id,nombre, tipo, desc, fecha_hora, n_ops, id_pisc);
+                evento e = new evento(id,nombre, tipo, desc, fecha_hora, n_ops, id_pisc,estado);
                 registro.add(e);
             }
             System.out.println("Eventos Consultados.");
-        }catch (Exception e){
+        }catch (SQLException e){
             System.out.println("Error en consulta de eventos."+e);
         }
         return registro;
@@ -412,6 +413,32 @@ public class ConexionBD {
         return p; 
     }
     
+    public evento obtenerDatosEvento(int evento){
+        evento ev = new evento();
+        ResultSet rs = null;                       
+        PreparedStatement st = null;
+        try{
+            st = con.prepareStatement("SELECT * FROM evento WHERE id_evento = ?;");
+            st.setString(1,String.valueOf(evento));
+            rs = st.executeQuery();            
+            if(rs.next()){
+                ev.setId_evento(rs.getInt("id_evento"));
+                ev.setNombre(rs.getString("nombre"));
+                ev.setTipo(rs.getString("tipo"));
+                ev.setDescripcion(rs.getString("descripcion"));
+                ev.setFecha(Date.valueOf(rs.getString("fecha")));
+                ev.setNumero_operadores(rs.getInt("numero_operadores"));
+                ev.setId_piscina(rs.getInt("id_piscina"));
+                ev.setEstado(rs.getString("estado"));
+                System.out.println("Datos de evento obtenidos...");
+            }
+            rs.close();
+            st.close();
+        }catch(SQLException e){
+            System.out.println("Error al obtener datos de evento... "+e);
+        }           
+        return ev; 
+    }
     
     public ArrayList<empresa> consultarEmpresas(String busqueda, String tipo){
         ArrayList<empresa> registro = new ArrayList<empresa>();
