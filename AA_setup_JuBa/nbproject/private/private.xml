@@ -4,12 +4,7 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/home/julian/gitClones/Controlador-Alimentador-Auto/AA_setup_JuBa/src/Objetos/log.java</file>
-            <file>file:/home/julian/gitClones/Controlador-Alimentador-Auto/AA_setup_JuBa/src/bd/controlLeds.java</file>
-            <file>file:/home/julian/gitClones/Controlador-Alimentador-Auto/AA_setup_JuBa/src/Objetos/alimentadorAuto.java</file>
-            <file>file:/home/julian/gitClones/Controlador-Alimentador-Auto/AA_setup_JuBa/src/Objetos/evento.java</file>
-            <file>file:/home/julian/gitClones/Controlador-Alimentador-Auto/AA_setup_JuBa/src/Objetos/empresa.java</file>
             <file>file:/home/julian/gitClones/Controlador-Alimentador-Auto/AA_setup_JuBa/src/bd/ConexionBD.java</file>
-            <file>file:/home/julian/gitClones/Controlador-Alimentador-Auto/AA_setup_JuBa/src/Objetos/piscina.java</file>
             <file>file:/home/julian/gitClones/Controlador-Alimentador-Auto/AA_setup_JuBa/src/principal/aa_setup.java</file>
         </group>
     </open-files>

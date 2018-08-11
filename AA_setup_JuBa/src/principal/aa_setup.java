@@ -12,8 +12,9 @@ import java.sql.Date;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Scanner;
-import java.util.logging.ConsoleHandler;
+import java.util.concurrent.TimeUnit;
 
 /**
  *
@@ -81,9 +82,29 @@ public class aa_setup {
                     //seleccionar evento
                     System.out.println("Seleccione un Evento:");
                     int ev1 = Integer.parseInt(in.next());
-                    System.out.println(ev1);
                     evento evento_selec = c.obtenerDatosEvento(ev1);
-                    //mostrarInfoEvento(evento_select);
+                    mostrarInfoEvento(evento_selec);
+                    //proceso de alimentacion
+                    System.out.println("Desea Iniciar el Evento Seleccionado?[S/N]:");
+                    String op = String.valueOf(in.next());
+                    if(op.equalsIgnoreCase("s")){
+                        //Iniciar Evento
+                        System.out.println("\n*** Inicializacion de Evento ***");
+                        //Cargar datos inicio
+                        System.out.println("Datos Iniciales:");
+                        mostrarInfoDisp(dispositivo);
+                        
+                        /*
+                        while(dispositivo.getNivel_bateria()>10.00){
+                            float bat_act = dispositivo.getNivel_bateria();
+                            generarLog(evento_selec, dispositivo,Date.valueOf(generarFechaHora()));
+                            dispositivo.setNivel_bateria(bat_act-5);
+                            TimeUnit.SECONDS.sleep(1);
+                            System.out.println("Nivel bat actual: "+bat_act);
+                        }*/
+                    }else if(op.equalsIgnoreCase("n")){
+                        System.out.println("Evento cancelado por usuario...\n");
+                    }
                     //apagando dispositivo
                     if(c.apagarDispositivo(IDAA)){
                         System.out.println("Dispositivo "+IDAA+" Apagado...");
@@ -97,6 +118,7 @@ public class aa_setup {
         }catch(Exception e){
             System.out.println("No se pudo conectar a la base de datos. "+e);
             try{
+                System.out.println("Apagado de emergencia...");
                 c.apagarDispositivo(IDAA);
                 c.desconectar();
             }catch(Exception ex){
@@ -141,7 +163,7 @@ public class aa_setup {
         System.out.println("Descripción:            "+aa.getDescripcion());
         System.out.println("Nivel Bateria:          "+aa.getNivel_bateria()+"%");
         System.out.println("Nivel Alimento:         "+aa.getNivel_alimento()+"%");
-        System.out.println("Capacidad Maxima Alimento: "+aa.getCap_max_alimento()+"[KG]");
+        System.out.println("Capacidad Max Alimento: "+aa.getCap_max_alimento()+"[KG]");
         System.out.println("Tipo:                   "+aa.getTipo());
         System.out.println("Distancia Recorrida:    "+aa.getDistancia_recorrida());
         System.out.println("Numero de Activaciones: "+aa.getN_activaciones());
@@ -155,7 +177,7 @@ public class aa_setup {
         System.out.println("Tipo:              "+e.getTipo());
         System.out.println("Descripción:       "+e.getDescripcion());
         System.out.println("Fecha:             "+e.getFecha());
-        System.out.println("Numero de Operadores: "+e.getNumero_operadores());
+        System.out.println("Numero Operadores: "+e.getNumero_operadores());
         System.out.println("Piscina:           "+e.getId_piscina());        
         System.out.println("Estado:            "+e.getEstado()+"\n");    
     }
@@ -214,16 +236,57 @@ public class aa_setup {
         return dtf.format(now);
     }
     
-    public static void iniciarEvento(){
-        
+    public static boolean iniciarEvento(evento e, alimentadorAuto aa){
+        float n_bat = aa.getNivel_bateria();
+        float n_al = aa.getNivel_alimento();
+        return (n_bat==100.00)&&(n_al==100.00);
     }
     
     public static void terminarEvento(){
         
     }
     
-    public static log generarLog(){
-        log bit = new log();
-        return bit;
+    public static log generarLog(evento e, alimentadorAuto d,Date fh){
+        log bitacora = new log();
+        //nombres
+        String nombre[] = {"Alimentacion","Energia","Movimiento"};
+        //descripcion
+        String n_bat = String.valueOf(d.getNivel_bateria());
+        String n_al = String.valueOf(d.getNivel_alimento());
+        String dist = String.valueOf(d.getDistancia_recorrida());
+        String n_act = String.valueOf(d.getN_activaciones());
+        String est = d.getEstado();
+        //tipos
+        String tipo[] = {"Notificacion","Advertencia","Error","Critico"};
+        //prioridades
+        String pri[] = {"Baja","Media","Alta"};        
+        //generador de temperatura
+        Random rand = new Random();
+        float temp = rand.nextInt(40) + 22;
+        //50 is the maximum and the 1 is our minimum 
+        ConexionBD c = new ConexionBD();
+        try{
+            if(d.getNivel_bateria()<=25.00){
+                bitacora.setNombre(nombre[1]);bitacora.getDescripcion();
+                bitacora.setDescripcion("Nivel Bateria:"+n_bat);
+                bitacora.setTipo(tipo[3]);
+                bitacora.setPrioridad(pri[2]);
+                bitacora.setFecha_hora(fh);
+                bitacora.setTemperatura(temp);
+                c.ingresarLog(bitacora);
+            }else{
+                bitacora.setNombre(nombre[1]);bitacora.getDescripcion();
+                bitacora.setDescripcion("Nivel Bateria:"+n_bat);
+                bitacora.setTipo(tipo[0]);
+                bitacora.setPrioridad(pri[0]);
+                bitacora.setFecha_hora(fh);
+                bitacora.setTemperatura(temp);
+                c.ingresarLog(bitacora);
+            }
+            c.desconectar();
+        }catch(Exception ex){
+            System.out.println("Error al generar log..."+ex);
+        }
+        return bitacora;
     }
 }

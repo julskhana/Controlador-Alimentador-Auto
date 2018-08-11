@@ -17,38 +17,38 @@ public class log implements Serializable{
     private int id;
     private String nombre;
     private String descripcion;
+    private String valor;
     private Date fecha_hora;
     private String tipo;
     private String prioridad;
     private float temperatura;
     private int id_evento;
-    private int dispositivo;
     
     //cosntructor 
 
-    public log(int id, String nombre, String descripcion, Date fecha_hora, String tipo, String prioridad, float temperatura, int id_evento, int dispositivo) {
+    public log(int id, String nombre, String descripcion,String valor, Date fecha_hora, String tipo, String prioridad, float temperatura, int id_evento, int dispositivo) {
         this.id = id;
         this.nombre = nombre;
         this.descripcion = descripcion;
+        this.valor = valor;
         this.fecha_hora = fecha_hora;
         this.tipo = tipo;
         this.prioridad = prioridad;
         this.temperatura = temperatura;
         this.id_evento = id_evento;
-        this.dispositivo = dispositivo;
     }
     
     //constructor para ingresar a base de datos
 
-    public log(String nombre, String descripcion, Date fecha_hora, String tipo, String prioridad, float temperatura, int id_evento, int dispositivo) {
+    public log(String nombre, String descripcion,String valor, Date fecha_hora, String tipo, String prioridad, float temperatura, int id_evento) {
         this.nombre = nombre;
         this.descripcion = descripcion;
+        this.valor = valor;
         this.fecha_hora = fecha_hora;
         this.tipo = tipo;
         this.prioridad = prioridad;
         this.temperatura = temperatura;
         this.id_evento = id_evento;
-        this.dispositivo = dispositivo;
     }
     
     //constructor vacio
@@ -66,6 +66,10 @@ public class log implements Serializable{
 
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
+    }
+
+    public void setValor(String valor) {
+        this.valor = valor;
     }
 
     public void setFecha_hora(Date fecha_hora) {
@@ -88,10 +92,6 @@ public class log implements Serializable{
         this.id_evento = id_evento;
     }
 
-    public void setDispositivo(int dispositivo) {
-        this.dispositivo = dispositivo;
-    }
-    
     //get
 
     public int getId() {
@@ -104,6 +104,10 @@ public class log implements Serializable{
 
     public String getDescripcion() {
         return descripcion;
+    }
+
+    public String getValor() {
+        return valor;
     }
 
     public Date getFecha_hora() {
@@ -126,8 +130,4 @@ public class log implements Serializable{
         return id_evento;
     }
 
-    public int getDispositivo() {
-        return dispositivo;
-    }
-    
 }

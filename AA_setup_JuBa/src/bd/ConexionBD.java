@@ -413,6 +413,36 @@ public class ConexionBD {
         return p; 
     }
     
+    public evento obtenerDatosEvento(int id){
+        evento eve = new evento();
+        ResultSet rs = null;
+        PreparedStatement st = null;
+        try{
+            st = con.prepareStatement("select * from evento where id_evento = ?;");
+            st.setInt(1,id);
+            st.executeQuery();
+            rs = st.executeQuery();
+            if(rs.next()){
+                eve.setId_evento(id);
+                eve.setNombre(rs.getString("nombre"));
+                eve.setTipo(rs.getString("tipo"));
+                eve.setDescripcion(rs.getString("descripcion"));
+                eve.setFecha(rs.getDate("fecha"));
+                eve.setNumero_operadores(rs.getInt("numero_operadores"));
+                eve.setId_piscina(rs.getInt("id_piscina"));
+                eve.setEstado(rs.getString("estado"));
+            }
+            rs.close();
+            st.close();
+            System.out.println("Datos de evento cargados correctamente...");
+        }catch(Exception e){
+            System.out.println("Error al obtener datos del evento...\n"+e);
+        }
+        return eve;
+    }
+
+    
+    /*
     public evento obtenerDatosEvento(int evento){
         evento ev = new evento();
         ResultSet rs = null;                       
@@ -438,7 +468,7 @@ public class ConexionBD {
             System.out.println("Error al obtener datos de evento... "+e);
         }           
         return ev; 
-    }
+    }*/
     
     public ArrayList<empresa> consultarEmpresas(String busqueda, String tipo){
         ArrayList<empresa> registro = new ArrayList<empresa>();
@@ -569,25 +599,48 @@ public class ConexionBD {
         return registro;
     }
     
-    public boolean generarLog(log log){
+    public boolean ingresarLog(log log){
         try{
             PreparedStatement st=null;
-            st = con.prepareStatement("INSERT INTO logs (nombre,descripcion,fecha_hora,tipo,prioridad,temperatura,id_evento) VALUES(?,?,?,?,?,?,?);");
-            st.setString(1,log.getNombre());
-            st.setString(2,log.getDescripcion());
-            st.setDate(3,log.getFecha_hora());
-            st.setString(4,log.getTipo());
-            st.setString(5,log.getPrioridad());
-            st.setFloat(6,log.getTemperatura());
-            st.setInt(7,log.getId_evento());
+            st = con.prepareStatement("INSERT INTO logs (nombre,descripcion,fecha_hora,tipo,prioridad,temperatura,id_evento) VALUES(?,?,?,?,?,?,?,?);");
+            st.setString(1,log.getNombre());        //alimentacion,movimiento,energia
+            st.setString(2,log.getDescripcion());   //nivel bat, nivel alimento, distancia, n act, estado_alimentador
+            st.setString(3,log.getValor());          //valor del la variable
+            st.setDate(4,log.getFecha_hora());      //fecha hora
+            st.setString(5,log.getTipo());          //notificacion,advertencia,error,critico. 
+            st.setString(6,log.getPrioridad());     //baja,media,alta
+            st.setFloat(7,log.getTemperatura());    //random
+            st.setInt(8,log.getId_evento());        //evento
             
             st.executeUpdate();
             st.close();
             
-            System.out.println("Log: "+log.getId()+" Tipo: "+log.getTipo()+" FechaHora: "+log.getFecha_hora()+" Evento: "+log.getId_evento());
+            System.out.println(" Tipo: "+log.getTipo()+"Log: "+log.getId()+" Nombre: "+log.getNombre()+" FechaHora: "+log.getFecha_hora()+" Descripcion: "+log.getDescripcion()+"Valor: "+log.getValor()+" Prioridad: "+log.getPrioridad()+" Temperatura: "+log.getTemperatura()+"°C"+" Evento: "+log.getId_evento());
             return true;
         }catch (SQLException e){
             System.out.println("Error al generar el log\n"+e);
+            return false;
+        }
+    }
+    
+    public boolean actualizarDispositivo(alimentadorAuto disp){
+        try{
+            System.out.println("Id del Dispositivo: "+disp.getId());
+            PreparedStatement st2 = null;
+            st2 = con.prepareStatement("update alimentador_auto set nivel_bateria = ?, nivel_alimento = ?, distancia_recorrida = ?, numero_activaciones = ? where id_aa = "+disp.getId()+";");
+            st2.setFloat(1,disp.getNivel_bateria());
+            st2.setFloat(2,disp.getNivel_alimento());
+            st2.setFloat(3,disp.getDistancia_recorrida());
+            st2.setInt(4,disp.getN_activaciones());
+            
+            st2.executeUpdate();
+            st2.close();
+            
+            System.out.println("Actualizacion de datos de Dispositivo exitosa...");
+            return true;
+        }
+        catch(SQLException e){
+            System.out.println("Error al actalizar dispositivo..."+e);
             return false;
         }
     }
