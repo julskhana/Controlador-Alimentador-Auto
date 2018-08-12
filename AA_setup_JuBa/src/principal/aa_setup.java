@@ -297,6 +297,7 @@ public class aa_setup {
         d.setNivel_alimento(al_act);
         d.setDistancia_recorrida(dist_act);
         d.setN_activaciones(n_activaciones);
+        
         try{
             TimeUnit.SECONDS.sleep(1);
         }catch(InterruptedException e){
