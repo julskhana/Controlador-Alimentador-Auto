@@ -13,19 +13,17 @@ import java.util.ArrayList;
 public class ConexionBD {
     
        private Connection con;
-       //driver netbeans
        private static final String DRIVER = "com.mysql.jdbc.Driver";
-       //driver para javac
        //private static final String DRIVER = "mysql-connector-java-5.1.23.jar";
        private static final String DBMS = "mysql";
-       //private static final String HOST = "192.168.10.2";   //prueba home           ok
-       private static final String HOST = "192.168.1.20";   //prueba home           ok
-       //private static final String HOST = "localhost";   //prueba juba           ok
+       //private static final String HOST = "192.168.10.2";     //prueba juba       ok
+       private static final String HOST = "192.168.1.20";       //prueba home       ok
        //private static final String HOST = "172.20.138.192";   //prueba espol      ok
-       //private static final String HOST = "127.0.0.1";    //prueba xampp local    ok
+       //private static final String HOST = "localhost";        //prueba local      ok
+       //private static final String HOST = "127.0.0.1";        //prueba local      ok
        private static final String PORT = "3306";
        //base de datos
-       private static final String DATABASE = "base_juba";  //cortejamiento: utf8_spanish_ci
+       private static final String DATABASE = "base_juba";      //cortejamiento: utf8_spanish_ci
        private static final String USER = "root2";
        private static final String PASSWORD = "proyecto";
 
@@ -137,8 +135,7 @@ public class ConexionBD {
             st.close();
             System.out.println("Dispositivo apagado correctamente...");
             return true;
-        }
-        catch(Exception e)
+        }catch(SQLException e)
         {
             System.out.println("Error al apagar el dispositivo... "+e);
             return false;
@@ -147,7 +144,7 @@ public class ConexionBD {
     
     public boolean ingresarEmpresa(empresa e){
         try{
-            PreparedStatement st=null;
+            PreparedStatement st = null;
             st = con.prepareStatement("INSERT into empresa (nombre,ruc,direccion,direccion_planta,telefono,correo) VALUES(?,?,?,?,?,?);");
             st.setString(1,e.getNombre());
             st.setString(2,e.getRuc());
@@ -169,7 +166,7 @@ public class ConexionBD {
     
     public boolean ingresarUsuario(usuario u){
         try{
-            PreparedStatement st=null;
+            PreparedStatement st = null;
             st = con.prepareStatement("INSERT INTO usuario (cuenta,clave,nombres,apellidos,cedula,edad,direccion,telefono,celular,correo,sexo,tipo,cargo,fecha_inicio,estado) VALUES(?,md5(?),?,?,?,?,?,?,?,?,?,?,?,?,?);");
             st.setString(1,u.getCuenta());
             st.setString(2,u.getClave());
@@ -289,7 +286,7 @@ public class ConexionBD {
     
     //consulta de seleccion de empresa despues de autenticacion
     public ArrayList<empresa> cargarEmpresas(int id_usuario){        
-        ArrayList<empresa> registroE = new ArrayList<empresa>();
+        ArrayList<empresa> registroE = new ArrayList<>();
         try{
             Statement st = this.con.createStatement();
             ResultSet rs = null;
@@ -301,14 +298,14 @@ public class ConexionBD {
                 registroE.add(emp);
             }
             System.out.println("Empresas Consultadas.");
-        }catch (Exception e){
+        }catch (SQLException e){
             System.out.println("error en consulta de empresas."+e);
         }
         return registroE;
     }
     
      public ArrayList<piscina> cargarPiscinas(int id_empresa){
-        ArrayList<piscina> registro = new ArrayList<piscina>();
+        ArrayList<piscina> registro = new ArrayList<>();
         try{
             Statement st = this.con.createStatement();
             ResultSet rs = null;
@@ -322,30 +319,36 @@ public class ConexionBD {
                 registro.add(p);
             }
             System.out.println("Piscinas Consultadas.");
-        }catch (Exception e){
+        }catch (SQLException e){
             System.out.println("error en consulta de piscinas."+e);
         }
         return registro;
     }
      
-     public ArrayList<evento> cargarEventosPendientes(int id_piscina){
-        ArrayList<evento> registro = new ArrayList<evento>();
+     public ArrayList<evento> cargarEventosPendientes(int id_piscina, String fecha){
+        ArrayList<evento> registro = new ArrayList<>();
         try{
             Statement st = this.con.createStatement();
             ResultSet rs = null;
+            //SELECT * FROM evento where id_piscina = 1 AND fecha = 2018-08-11 AND estado = "Pendiente";
             rs = st.executeQuery("SELECT * FROM evento where id_piscina = "+id_piscina+" AND estado = \"Pendiente\";");
             while (rs.next()){
                 int id = rs.getInt("id_evento");
                 String nombre = rs.getString("nombre");
                 String tipo = rs.getString("tipo");
                 String desc = rs.getString("descripcion");
-                Date fecha_hora = rs.getDate("fecha");
+                Date fechaE = rs.getDate("fecha");
                 int n_ops = rs.getInt("numero_operadores");
                 int id_pisc = rs.getInt("id_piscina");
                 String estado = rs.getString("estado");
-                
-                evento e = new evento(id,nombre, tipo, desc, fecha_hora, n_ops, id_pisc,estado);
-                registro.add(e);
+                /*
+                System.out.println("fecha consulta:     "+fecha);
+                System.out.println("fecha evento base:  "+fechaE);
+                */        
+                if(fecha.equals(String.valueOf(fechaE))){
+                    evento e = new evento(id,nombre, tipo, desc, fechaE, n_ops, id_pisc,estado);
+                    registro.add(e);
+                }
             }
             System.out.println("Eventos Consultados.");
         }catch (SQLException e){
@@ -435,7 +438,7 @@ public class ConexionBD {
             rs.close();
             st.close();
             System.out.println("Datos de evento cargados correctamente...");
-        }catch(Exception e){
+        }catch(SQLException e){
             System.out.println("Error al obtener datos del evento...\n"+e);
         }
         return eve;
@@ -471,7 +474,7 @@ public class ConexionBD {
     }*/
     
     public ArrayList<empresa> consultarEmpresas(String busqueda, String tipo){
-        ArrayList<empresa> registro = new ArrayList<empresa>();
+        ArrayList<empresa> registro = new ArrayList<>();
         try{
             Statement st = this.con.createStatement();            
             ResultSet rs = null;
@@ -503,7 +506,7 @@ public class ConexionBD {
     } 
     
     public ArrayList<usuario> consultarUsuarios(String busqueda, String tipo){
-	ArrayList<usuario> registroU = new ArrayList<usuario>();
+	ArrayList<usuario> registroU = new ArrayList<>();
 	try{
 		Statement st = this.con.createStatement();		
 		ResultSet rs = null;
@@ -542,7 +545,7 @@ public class ConexionBD {
     }
     
     public ArrayList<operador> consultarPiscinas(String busqueda, String lista) {
-        ArrayList<operador> registro = new ArrayList<operador>();
+        ArrayList<operador> registro = new ArrayList<>();
         try{
             Statement st = this.con.createStatement();            
             ResultSet rs = null;
@@ -571,7 +574,7 @@ public class ConexionBD {
     }
     
     public ArrayList<operador> consultarOperadores(String busqueda, String lista) {
-        ArrayList<operador> registro = new ArrayList<operador>();
+        ArrayList<operador> registro = new ArrayList<>();
         try{
             Statement st = this.con.createStatement();            
             ResultSet rs = null;
@@ -641,6 +644,24 @@ public class ConexionBD {
         }
         catch(SQLException e){
             System.out.println("Error al actalizar dispositivo..."+e);
+            return false;
+        }
+    }
+    
+    public boolean finalizarEvento(evento ev){
+        try{
+            System.out.println("Terminando evento #"+ev.getId_evento());
+            PreparedStatement st = null;
+            st = con.prepareStatement("UPDATE evento set estado = \"Realizado\" WHERE id_evento = ?;");
+            st.setInt(1,ev.getId_evento());
+            
+            st.executeUpdate();
+            st.close();
+            System.out.println("Evento Realizado Exitosamente...");
+            
+            return true;
+        }catch (Exception e){
+            System.out.println("Error al terminar evento... "+ e);
             return false;
         }
     }

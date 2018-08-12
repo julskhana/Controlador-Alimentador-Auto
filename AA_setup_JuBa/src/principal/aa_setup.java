@@ -12,6 +12,7 @@ import java.sql.Date;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
@@ -32,6 +33,7 @@ public class aa_setup {
         System.out.println("INGRESO AL SISTEMA - AUTENTICACION");
         //generar fecha hora
         System.out.println("Fecha y Hora Actual: "+generarFechaHora());
+        //System.out.println("Fecha: "+generarFecha());
         //ingresao de usuario
         Scanner in = new Scanner(System.in);
         System.out.println("Ingrese su cuenta de usuario:");
@@ -76,38 +78,63 @@ public class aa_setup {
                     //EVENTOS
                     //listar evento
                     System.out.println("Seleccione el Evento programado que desea ejecutar:");
-                    ArrayList<evento> eventos = c.cargarEventosPendientes(piscina_select.getId_piscina());
-                    //System.out.println("Eventos programados: "+eventos.size());
-                    mostrarListaEventos(eventos);
-                    //seleccionar evento
-                    System.out.println("Seleccione un Evento:");
-                    int ev1 = Integer.parseInt(in.next());
-                    evento evento_selec = c.obtenerDatosEvento(ev1);
-                    mostrarInfoEvento(evento_selec);
-                    //proceso de alimentacion
-                    System.out.println("Desea Iniciar el Evento Seleccionado?[S/N]:");
-                    String op = String.valueOf(in.next());
-                    if(op.equalsIgnoreCase("s")){
-                        //Iniciar Evento
-                        System.out.println("\n*** Inicializacion de Evento ***");
-                        //Cargar datos inicio
-                        System.out.println("Datos Iniciales:");
-                        mostrarInfoDisp(dispositivo);
-                        
-                        /*
-                        while(dispositivo.getNivel_bateria()>10.00){
-                            float bat_act = dispositivo.getNivel_bateria();
-                            generarLog(evento_selec, dispositivo,Date.valueOf(generarFechaHora()));
-                            dispositivo.setNivel_bateria(bat_act-5);
-                            TimeUnit.SECONDS.sleep(1);
-                            System.out.println("Nivel bat actual: "+bat_act);
-                        }*/
-                    }else if(op.equalsIgnoreCase("n")){
-                        System.out.println("Evento cancelado por usuario...\n");
-                    }
-                    //apagando dispositivo
-                    if(c.apagarDispositivo(IDAA)){
-                        System.out.println("Dispositivo "+IDAA+" Apagado...");
+                    ArrayList<evento> eventos = c.cargarEventosPendientes(piscina_select.getId_piscina(),generarFecha());
+                    System.out.println("Eventos programados: "+eventos.size());
+                    if(eventos.size()>0){
+                        mostrarListaEventos(eventos);
+                        //seleccionar evento
+                        System.out.println("Seleccione el *ID* Evento:");
+                        int ev1 = Integer.parseInt(in.next());
+                        evento evento_selec = c.obtenerDatosEvento(ev1);
+                        mostrarInfoEvento(evento_selec);
+                        //proceso de alimentacion
+                        System.out.println("Desea Iniciar el Evento Seleccionado?[S/N]:");
+                        String op = String.valueOf(in.next());
+                        if(op.equalsIgnoreCase("s")){
+                            //Iniciar Evento
+                            System.out.println("\n*** Inicializacion de Evento ***");
+                            //Cargar datos inicio
+                            System.out.println("Datos Iniciales:");
+                            mostrarInfoDisp(dispositivo);
+                            c.encenderDispositivo(dispositivo.getId());
+                            while(dispositivo.getNivel_bateria()>20){
+                                System.out.println("Estado del Dispositivo\nNivel Bateria: "+dispositivo.getNivel_bateria()+
+                                        "% - Nivel Alimento: "+dispositivo.getNivel_alimento()+
+                                        "% - Distancia Recorrida: "+dispositivo.getDistancia_recorrida()+
+                                        "[m] - Número Activaciones: "+dispositivo.getN_activaciones()+
+                                        "Temperatura: "+generarTemperatura()+"°C"+
+                                        " - Estado: "+dispositivo.getEstado());
+                                //proceso de consumibles
+                                procesoAlimentacion(dispositivo);
+                                c.actualizarDispositivo(dispositivo);
+                                /*
+                                //generacion de logs
+                                Date fh = Date.valueOf(generarFechaHora());
+                                //log de bateria
+                                log bitacora = generarBitacora(evento_selec.getId_evento(),dispositivo,fh,"bat");
+                                c.ingresarLog(bitacora);
+                                //log de alimento
+                                bitacora = generarBitacora(evento_selec.getId_evento(),dispositivo,fh,"ali");
+                                c.ingresarLog(bitacora);
+                                //log de movimiento
+                                bitacora = generarBitacora(evento_selec.getId_evento(),dispositivo,fh,"mov");
+                                c.ingresarLog(bitacora);
+                                */
+
+                            }
+                            c.finalizarEvento(evento_selec);
+                            System.out.println("Bateria Baja: "+dispositivo.getNivel_bateria()+"% - Regreso a Base *Muelle*");
+                        }else if(op.equalsIgnoreCase("n")){
+                            System.out.println("Evento cancelado por usuario...\n");
+                        }else{
+                            System.out.println("Opcion Invalida...");
+                        }
+                        //apagando dispositivo
+                        if(c.apagarDispositivo(IDAA)){
+                            System.out.println("Dispositivo "+IDAA+" Apagado...");
+                        }
+                    }else{
+                        System.out.println("No hay eventos disponibles el dia de hoy: "+generarFecha());
                     }
                 }else{
                     System.out.println("Error al conectar el dispositivo...");
@@ -172,7 +199,7 @@ public class aa_setup {
     
     public static void mostrarInfoEvento(evento e){
         System.out.println("Informacion del Evento");
-        System.out.println("Id:                "+e.getId_evento());
+        System.out.println("ID:                *"+e.getId_evento()+"*");
         System.out.println("Nombre:            "+e.getNombre());
         System.out.println("Tipo:              "+e.getTipo());
         System.out.println("Descripción:       "+e.getDescripcion());
@@ -209,10 +236,10 @@ public class aa_setup {
                 int id = eve.getId_evento();
                 String nom = eve.getNombre();
                 String fecha = eve.getFecha().toString();
-                String fecha_act = generarFechaHora().split(" ")[0];
+                String fecha_act = generarFecha();
                 String estado = eve.getEstado();
-                if(fecha.equals(fecha_act) && estado.equals("Pendiente")){
-                    System.out.println(i+". Evento Id:"+id+" "+nom+" - "+estado);
+                if(fecha.equals(fecha_act)){
+                    System.out.println(i+". Evento Id: *"+id+"* "+nom+" - "+estado);
                     i++;
                 }
             }
@@ -236,57 +263,119 @@ public class aa_setup {
         return dtf.format(now);
     }
     
+    public static String generarFecha(){
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");  
+        LocalDateTime now = LocalDateTime.now(); 
+        return dtf.format(now);
+    }
+    
     public static boolean iniciarEvento(evento e, alimentadorAuto aa){
         float n_bat = aa.getNivel_bateria();
         float n_al = aa.getNivel_alimento();
         return (n_bat==100.00)&&(n_al==100.00);
     }
     
-    public static void terminarEvento(){
-        
+    public static float generarTemperatura(){   
+        //generador de temperatura - 50 is the maximum and the 1 is our minimum 
+        Random rand = new Random();
+        float temp = rand.nextInt(20) + 19;
+        return temp;
     }
     
-    public static log generarLog(evento e, alimentadorAuto d,Date fh){
-        log bitacora = new log();
+    public static alimentadorAuto procesoAlimentacion(alimentadorAuto d){
+        //actualizacion de consumibles en alimentador automatico
+        //disminuir bateria
+        float bat_act = d.getNivel_bateria()-1;
+        //disminuir alimento
+        float al_act = d.getNivel_alimento()-1;
+        //aumentar distancia
+        float dist_act = (float) (d.getDistancia_recorrida()+0.2);
+        //activaciones
+        int n_activaciones = d.getN_activaciones()+1;
+        //insertar valores actualizados
+        d.setNivel_bateria(bat_act);
+        d.setNivel_alimento(al_act);
+        d.setDistancia_recorrida(dist_act);
+        d.setN_activaciones(n_activaciones);
+        try{
+            TimeUnit.SECONDS.sleep(1);
+        }catch(InterruptedException e){
+            System.out.println("Error en el proceso de alimentacion...\n"+e);
+        }
+        return d;
+    }
+    
+    public static log generarBitacora(int id_evento, alimentadorAuto d,Date fh, String tip){
+        //tipos bat, ali, mov
+        log bit = new log();
         //nombres
         String nombre[] = {"Alimentacion","Energia","Movimiento"};
         //descripcion
-        String n_bat = String.valueOf(d.getNivel_bateria());
-        String n_al = String.valueOf(d.getNivel_alimento());
-        String dist = String.valueOf(d.getDistancia_recorrida());
-        String n_act = String.valueOf(d.getN_activaciones());
+        //valores
+        float n_bat = d.getNivel_bateria();
+        float n_al = d.getNivel_alimento();
+        int n_act = d.getN_activaciones();
         String est = d.getEstado();
         //tipos
         String tipo[] = {"Notificacion","Advertencia","Error","Critico"};
         //prioridades
         String pri[] = {"Baja","Media","Alta"};        
-        //generador de temperatura
-        Random rand = new Random();
-        float temp = rand.nextInt(40) + 22;
-        //50 is the maximum and the 1 is our minimum 
-        ConexionBD c = new ConexionBD();
-        try{
-            if(d.getNivel_bateria()<=25.00){
-                bitacora.setNombre(nombre[1]);bitacora.getDescripcion();
-                bitacora.setDescripcion("Nivel Bateria:"+n_bat);
-                bitacora.setTipo(tipo[3]);
-                bitacora.setPrioridad(pri[2]);
-                bitacora.setFecha_hora(fh);
-                bitacora.setTemperatura(temp);
-                c.ingresarLog(bitacora);
-            }else{
-                bitacora.setNombre(nombre[1]);bitacora.getDescripcion();
-                bitacora.setDescripcion("Nivel Bateria:"+n_bat);
-                bitacora.setTipo(tipo[0]);
-                bitacora.setPrioridad(pri[0]);
-                bitacora.setFecha_hora(fh);
-                bitacora.setTemperatura(temp);
-                c.ingresarLog(bitacora);
+        if(tip.equalsIgnoreCase("bat")){
+            //noveles de bateria
+            if(n_bat>50){
+                bit.setNombre(nombre[1]);
+                bit.setDescripcion("Nivel de Bateria %");
+                bit.setValor(n_al+"%");
+                bit.setFecha_hora(fh);
+                bit.setTipo(tipo[0]);
+                bit.setPrioridad(pri[0]);
+            }else if(n_bat<=50 && n_bat>=25){
+                bit.setNombre(nombre[1]);
+                bit.setDescripcion("Nivel de Bateria %");
+                bit.setValor(n_al+"%");
+                bit.setFecha_hora(fh);
+                bit.setTipo(tipo[1]);
+                bit.setPrioridad(pri[1]);
+            }else if(n_bat<25){
+                bit.setNombre(nombre[1]);
+                bit.setDescripcion("Nivel de Bateria %");
+                bit.setValor(n_al+"%");
+                bit.setFecha_hora(fh);
+                bit.setTipo(tipo[3]);
+                bit.setPrioridad(pri[2]);
             }
-            c.desconectar();
-        }catch(Exception ex){
-            System.out.println("Error al generar log..."+ex);
+        }else if(tip.equalsIgnoreCase("ali")){
+            //nivelers de alimento
+            if(n_al>0){
+                bit.setNombre(nombre[0]);
+                bit.setDescripcion("Nivel de Alimento %");
+                bit.setValor(n_al+"%");
+                bit.setFecha_hora(fh);
+                bit.setTipo(tipo[0]);
+                bit.setPrioridad(pri[0]);            
+            }else{
+                bit.setNombre(nombre[0]);
+                bit.setDescripcion("Nivel de Alimento %");
+                bit.setValor(n_al+"%");
+                bit.setFecha_hora(fh);
+                bit.setTipo(tipo[2]);
+                bit.setPrioridad(pri[2]);            
+            }
+        }else if(tip.equalsIgnoreCase("mov")){
+            //distancia recorrida
+            bit.setNombre(nombre[2]);
+            bit.setDescripcion("Distancia Recorrida [m]");
+            bit.setValor(n_al+"%");
+            bit.setFecha_hora(fh);
+            bit.setTipo(tipo[0]);
+            bit.setPrioridad(pri[0]);            
+        }else{
+            System.out.println("Error al generar log...");
         }
-        return bitacora;
+        System.out.println("");
+        bit.setFecha_hora(fh);
+        bit.setTemperatura(generarTemperatura());
+        bit.setId_evento(id_evento);
+        return bit;
     }
 }
