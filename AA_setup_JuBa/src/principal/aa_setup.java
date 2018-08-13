@@ -96,9 +96,9 @@ public class aa_setup {
                             //Cargar datos inicio
                             System.out.println("Datos Iniciales:");
                             mostrarInfoDisp(dispositivo);
-                            c.encenderDispositivo(dispositivo.getId());
-                            while(dispositivo.getNivel_bateria()>20){
-                                System.out.println("Estado del Dispositivo\nNivel Bateria: "+dispositivo.getNivel_bateria()+
+                            if(c.encenderDispositivo(dispositivo.getId())){
+                                while(dispositivo.getNivel_bateria()>20){
+                                System.out.println("Estado del Dispositivo AA - Nivel Bateria: "+dispositivo.getNivel_bateria()+
                                         "% - Nivel Alimento: "+dispositivo.getNivel_alimento()+
                                         "% - Distancia Recorrida: "+dispositivo.getDistancia_recorrida()+
                                         "[m] - Número Activaciones: "+dispositivo.getN_activaciones()+
@@ -121,8 +121,11 @@ public class aa_setup {
                                 bitacora = generarBitacora(evento_selec.getId_evento(),dispositivo,fh,"mov");
                                 c.ingresarLog(bitacora);
                                 */
+                                }
+                                c.finalizarEvento(evento_selec);
+                            }else{
+                                System.out.println("Error en el proceso de alimentacion...");
                             }
-                            c.finalizarEvento(evento_selec);
                             System.out.println("Bateria Baja: "+dispositivo.getNivel_bateria()+"% - Regreso a Base *Muelle*");
                         }else if(op.equalsIgnoreCase("n")){
                             System.out.println("Evento cancelado por usuario...\n");

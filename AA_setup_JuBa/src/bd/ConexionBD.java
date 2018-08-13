@@ -104,8 +104,7 @@ public class ConexionBD {
     public boolean encenderDispositivo(int id){
         System.out.println("Encendiendo Dispositivo...");
         String estado_actual = "Encendido";
-        try
-        {
+        try{
             PreparedStatement st = null;
             st = con.prepareStatement("update alimentador_auto set estado = ? WHERE id_aa = ?;");
             st.setString(1,estado_actual);
@@ -114,9 +113,7 @@ public class ConexionBD {
             st.close();
             System.out.println("Dispositivo encendido correctamente...");
             return true;
-        }
-        catch(Exception e)
-        {
+        }catch(SQLException e){
             System.out.println("Error al encender el dispositivo... "+e);
             return false;
         }
