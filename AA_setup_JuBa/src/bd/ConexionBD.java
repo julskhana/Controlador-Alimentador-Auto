@@ -17,8 +17,8 @@ public class ConexionBD {
        //private static final String DRIVER = "mysql-connector-java-5.1.23.jar";
        private static final String DBMS = "mysql";
        //private static final String HOST = "192.168.10.2";     //prueba juba       ok
-       private static final String HOST = "192.168.1.20";       //prueba home       ok
-       //private static final String HOST = "172.20.138.192";   //prueba espol      ok
+       //private static final String HOST = "192.168.1.20";       //prueba home       ok
+       private static final String HOST = "172.20.143.29";   //prueba espol      ok
        //private static final String HOST = "localhost";        //prueba local      ok
        //private static final String HOST = "127.0.0.1";        //prueba local      ok
        private static final String PORT = "3306";
@@ -602,23 +602,22 @@ public class ConexionBD {
         return registro;
     }
     
-    public boolean ingresarLog(log log){
+    public boolean ingresarLog(log l){
         try{
             PreparedStatement st=null;
-            st = con.prepareStatement("INSERT INTO logs (nombre,descripcion,fecha_hora,tipo,prioridad,temperatura,id_evento) VALUES(?,?,?,?,?,?,?,?);");
-            st.setString(1,log.getNombre());        //alimentacion,movimiento,energia
-            st.setString(2,log.getDescripcion());   //nivel bat, nivel alimento, distancia, n act, estado_alimentador
-            st.setString(3,log.getValor());          //valor del la variable
-            st.setDate(4,log.getFecha_hora());      //fecha hora
-            st.setString(5,log.getTipo());          //notificacion,advertencia,error,critico. 
-            st.setString(6,log.getPrioridad());     //baja,media,alta
-            st.setFloat(7,log.getTemperatura());    //random
-            st.setInt(8,log.getId_evento());        //evento
+            st = con.prepareStatement("INSERT INTO logs (tipo,descripcion,valor,fecha_hora,prioridad,temperatura,id_evento) VALUES(?,?,?,?,?,?,?);");           
+            st.setString(1,l.getTipo());          //notificacion,advertencia,error,critico. 
+            st.setString(2,l.getDescripcion());   //nivel bat, nivel alimento, distancia, n act, estado_alimentador
+            st.setFloat(3,l.getValor());          //valor del la variable
+            st.setDate(4,l.getFecha_hora());      //fecha hora
+            st.setString(5,l.getPrioridad());     //baja,media,alta
+            st.setFloat(7,l.getTemperatura());    //random
+            st.setInt(7,l.getId_evento());        //evento
             
             st.executeUpdate();
             st.close();
-            
-            System.out.println(" Tipo: "+log.getTipo()+"Log: "+log.getId()+" Nombre: "+log.getNombre()+" FechaHora: "+log.getFecha_hora()+" Descripcion: "+log.getDescripcion()+"Valor: "+log.getValor()+" Prioridad: "+log.getPrioridad()+" Temperatura: "+log.getTemperatura()+"°C"+" Evento: "+log.getId_evento());
+            System.out.println("Bitacora - Tipo: ["+l.getTipo()+"] Descripcion: ["+l.getDescripcion()+"] Valor: ["+l.getValor()+"] Fecha Hora: ["+l.getFecha_hora()+"] Prioridad: ["+l.getPrioridad()+"] Tempreatura ["+l.getTemperatura()+"°C] Evento: ["+l.getId_evento()+"]");
+            //System.out.println(" Tipo: "+log.getTipo()+"Log: "+log.getId()+" Nombre: "+log.getNombre()+" FechaHora: "+log.getFecha_hora()+" Descripcion: "+log.getDescripcion()+"Valor: "+log.getValor()+" Prioridad: "+log.getPrioridad()+" Temperatura: "+log.getTemperatura()+"°C"+" Evento: "+log.getId_evento());
             return true;
         }catch (SQLException e){
             System.out.println("Error al generar el log\n"+e);
@@ -660,7 +659,7 @@ public class ConexionBD {
             System.out.println("Evento Realizado Exitosamente...");
             
             return true;
-        }catch (Exception e){
+        }catch (SQLException e){
             System.out.println("Error al terminar evento... "+ e);
             return false;
         }

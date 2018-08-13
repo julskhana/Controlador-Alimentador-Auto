@@ -15,20 +15,18 @@ import java.sql.Date;
 public class log implements Serializable{
     
     private int id;
-    private String nombre;
-    private String descripcion;
-    private String valor;
-    private Date fecha_hora;
     private String tipo;
+    private String descripcion;
+    private float valor;
+    private Date fecha_hora;
     private String prioridad;
     private float temperatura;
     private int id_evento;
     
     //cosntructor 
 
-    public log(int id, String nombre, String descripcion,String valor, Date fecha_hora, String tipo, String prioridad, float temperatura, int id_evento, int dispositivo) {
+    public log(int id, String descripcion,float valor, Date fecha_hora,String tipo, String prioridad, float temperatura, int id_evento, int dispositivo) {
         this.id = id;
-        this.nombre = nombre;
         this.descripcion = descripcion;
         this.valor = valor;
         this.fecha_hora = fecha_hora;
@@ -40,8 +38,7 @@ public class log implements Serializable{
     
     //constructor para ingresar a base de datos
 
-    public log(String nombre, String descripcion,String valor, Date fecha_hora, String tipo, String prioridad, float temperatura, int id_evento) {
-        this.nombre = nombre;
+    public log(String descripcion,float valor, Date fecha_hora, String tipo, String prioridad, float temperatura, int id_evento) {
         this.descripcion = descripcion;
         this.valor = valor;
         this.fecha_hora = fecha_hora;
@@ -60,15 +57,11 @@ public class log implements Serializable{
         this.id = id;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
     }
 
-    public void setValor(String valor) {
+    public void setValor(float valor) {
         this.valor = valor;
     }
 
@@ -98,15 +91,11 @@ public class log implements Serializable{
         return id;
     }
 
-    public String getNombre() {
-        return nombre;
-    }
-
     public String getDescripcion() {
         return descripcion;
     }
 
-    public String getValor() {
+    public float getValor() {
         return valor;
     }
 

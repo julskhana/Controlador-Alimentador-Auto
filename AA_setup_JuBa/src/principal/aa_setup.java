@@ -102,7 +102,7 @@ public class aa_setup {
                                         "% - Nivel Alimento: "+dispositivo.getNivel_alimento()+
                                         "% - Distancia Recorrida: "+dispositivo.getDistancia_recorrida()+
                                         "[m] - Número Activaciones: "+dispositivo.getN_activaciones()+
-                                        "Temperatura: "+generarTemperatura()+"°C"+
+                                        " - Temperatura: "+generarTemperatura()+"°C"+
                                         " - Estado: "+dispositivo.getEstado());
                                 //proceso de consumibles
                                 procesoAlimentacion(dispositivo);
@@ -111,8 +111,9 @@ public class aa_setup {
                                 //generacion de logs
                                 Date fh = Date.valueOf(generarFechaHora());
                                 //log de bateria
-                                log bitacora = generarBitacora(evento_selec.getId_evento(),dispositivo,fh,"bat");
+                                log bitacora = generarBitacora(evento_selec.getId_evento(),dispositivo,fh);
                                 c.ingresarLog(bitacora);
+                                
                                 //log de alimento
                                 bitacora = generarBitacora(evento_selec.getId_evento(),dispositivo,fh,"ali");
                                 c.ingresarLog(bitacora);
@@ -120,7 +121,6 @@ public class aa_setup {
                                 bitacora = generarBitacora(evento_selec.getId_evento(),dispositivo,fh,"mov");
                                 c.ingresarLog(bitacora);
                                 */
-
                             }
                             c.finalizarEvento(evento_selec);
                             System.out.println("Bateria Baja: "+dispositivo.getNivel_bateria()+"% - Regreso a Base *Muelle*");
@@ -306,21 +306,49 @@ public class aa_setup {
         return d;
     }
     
-    public static log generarBitacora(int id_evento, alimentadorAuto d,Date fh, String tip){
+    public static log generarBitacora(int id_evento, alimentadorAuto d,Date fh){
         //tipos bat, ali, mov
         log bit = new log();
-        //nombres
-        String nombre[] = {"Alimentacion","Energia","Movimiento"};
+        /*
+        private int id;
+        private String tipo;
+        private String descripcion;
+        private String valor;
+        private Date fecha_hora;
+        private String prioridad;
+        private float temperatura;
+        private int id_evento;
+        */
         //descripcion
         //valores
+        /*
         float n_bat = d.getNivel_bateria();
         float n_al = d.getNivel_alimento();
-        int n_act = d.getN_activaciones();
         String est = d.getEstado();
+        */
         //tipos
         String tipo[] = {"Notificacion","Advertencia","Error","Critico"};
         //prioridades
         String pri[] = {"Baja","Media","Alta"};        
+        //seleccion de tipos de bitacora
+        //energia
+        if (d.getNivel_bateria()>40){
+            bit.setTipo("Notificacion");
+            bit.setDescripcion("Bateria %");
+            bit.setValor(d.getNivel_bateria());
+            bit.setPrioridad("Baja");
+        }else if(d.getNivel_bateria()>20 && d.getNivel_bateria()<=40){
+            bit.setTipo("Advertencia");
+            bit.setDescripcion("Bateria %");
+            bit.setValor(d.getNivel_bateria());
+            bit.setPrioridad("Media");
+        }else if(d.getNivel_bateria()<=20){
+            bit.setTipo("Critico");
+            bit.setDescripcion("Bateria %");
+            bit.setValor(d.getNivel_bateria());
+            bit.setPrioridad("Alta");
+        }
+        /*
         if(tip.equalsIgnoreCase("bat")){
             //noveles de bateria
             if(n_bat>50){
@@ -372,7 +400,7 @@ public class aa_setup {
             bit.setPrioridad(pri[0]);            
         }else{
             System.out.println("Error al generar log...");
-        }
+        }*/
         System.out.println("");
         bit.setFecha_hora(fh);
         bit.setTemperatura(generarTemperatura());
